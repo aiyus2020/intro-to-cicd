@@ -1,14 +1,12 @@
-// index.js
 const express = require('express');
 const app = express();
 
-// Middleware (optional, for JSON parsing if needed)
-app.use(express.json());
+const port = process.env.PORT || 3000;
 
-// Routes
 app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-exports = app; // Export the app for testing or further configuration
-
+// DO NOT start the server here (no app.listen())
+// Just export the app for testing
+module.exports = app;
