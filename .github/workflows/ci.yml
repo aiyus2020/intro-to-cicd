@@ -33,14 +33,27 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Step 3: Install dependencies using clean install
+      # Step 3: Cache Node Modules
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 4: Install dependencies using clean install
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Build the project (if applicable)
+      # Step 5: Build the project (if applicable)
       - name: Build project
         run: npm run build --if-present
 
-      # Step 5: Run tests
+      # Step 6: Run tests
       - name: Run tests
         run: npm test
+
+      # Step 7: Run Linter
+      - name: Run ESLint
+        run: npx eslint .
