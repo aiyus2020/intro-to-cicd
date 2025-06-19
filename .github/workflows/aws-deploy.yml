@@ -1,4 +1,4 @@
-name: Deploy to AWS Elastic Beanstalks
+name: Deploy to AWS Elastic Beanstalk
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Sets up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -33,15 +33,14 @@ jobs:
 
       - name: Upload app to S3
         run: |
-          aws s3 cp app.zip s3://my-eb-app-bucket/app-1.zip
-
+          aws s3 cp app.zip s3://${{ secrets.S3_BUCKET_NAME }}/app-${{ github.run_number }}.zip
 
       - name: Create new app version
         run: |
           aws elasticbeanstalk create-application-version \
             --application-name ${{ secrets.EB_APP_NAME }} \
             --version-label v${{ github.run_number }} \
-            --source-bundle S3Bucket=my-eb-app-bucket,S3Key=app-1.zip
+            --source-bundle S3Bucket=${{ secrets.S3_BUCKET_NAME }},S3Key=app-${{ github.run_number }}.zip
 
       - name: Deploy app version to environment
         run: |
