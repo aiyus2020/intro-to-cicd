@@ -33,14 +33,15 @@ jobs:
 
       - name: Upload app to S3
         run: |
-          aws s3 cp app.zip s3://${{ secrets.S3_BUCKET_NAME }}/app-${{ github.run_number }}.zip
+          aws s3 cp app.zip s3://my-eb-app-bucket/app-1.zip
+
 
       - name: Create new app version
         run: |
           aws elasticbeanstalk create-application-version \
             --application-name ${{ secrets.EB_APP_NAME }} \
             --version-label v${{ github.run_number }} \
-            --source-bundle S3Bucket=${{ secrets.S3_BUCKET_NAME }},S3Key=app-${{ github.run_number }}.zip
+            --source-bundle S3Bucket=my-eb-app-bucket,S3Key=app-1.zip
 
       - name: Deploy app version to environment
         run: |
